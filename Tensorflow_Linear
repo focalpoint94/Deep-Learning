@@ -1,0 +1,110 @@
+%matplotlib inline
+import matplotlib.pyplot as plt
+import tensorflow as tf
+import numpy as np
+from sklearn.metrics import confusion_matrix
+
+import sys
+sys.path.append('./utils')
+
+from mnist import MNIST
+data = MNIST(data_dir="data/MNIST/")
+
+print("Size of:")
+print("- Training-set:\t\t{}".format(data.num_train))
+print("- Validation-set:\t{}".format(data.num_val))
+print("- Test-set:\t\t{}".format(data.num_test))
+
+# The images are stored in one-dimensional arrays of this length.
+img_size_flat = data.img_size_flat
+
+# Tuple with height and width of images used to reshape arrays.
+img_shape = data.img_shape
+
+# Number of classes, one class for each of 10 digits.
+num_classes = data.num_classes
+
+import functools
+
+def lazy_property(function):
+    attribute = '_cache_' + function.__name__
+
+    @property
+    @functools.wraps(function)
+    def decorator(self):
+        if not hasattr(self, attribute):
+            setattr(self, attribute, function(self))
+        return getattr(self, attribute)
+
+    return decorator
+
+class Model:
+    
+    def __init__(self, data, target):
+        ##### YOUR CODE START #####
+        self.data = data
+        self.target = target
+        self.prediction
+        self.optimize
+        self.error
+        ##### YOUR CODE END #####
+        
+    @lazy_property
+    def logits(self):
+        ##### YOUR CODE START #####
+        data_size = int(self.data.get_shape()[1])
+        target_size = int(self.target.get_shape()[1])
+        weight = tf.Variable(tf.truncated_normal([data_size, target_size]))
+        bias = tf.Variable(tf.constant(0.1, shape=[target_size]))
+        return tf.matmul(self.data, weight) + bias
+        ##### YOUR CODE END #####
+        
+    @lazy_property
+    def prediction(self):
+        ##### YOUR CODE START #####
+        return tf.nn.softmax(self.logits)
+        ##### YOUR CODE END #####
+    
+    @lazy_property
+    def optimize(self):
+        ##### YOUR CODE START #####
+        cross_entropy = tf.nn.softmax_cross_entropy_with_logits_v2(logits=self.logits, labels=self.target)
+        cost = tf.reduce_mean(cross_entropy)
+        optimizer = tf.train.AdamOptimizer(learning_rate=0.01)
+        return optimizer.minimize(cost)
+        ##### YOUR CODE END #####
+    
+    @lazy_property
+    def error(self):
+        ##### YOUR CODE START #####
+        mistakes = tf.not_equal(tf.argmax(self.target, 1), tf.argmax(self.prediction, 1))
+        return tf.reduce_mean(tf.cast(mistakes, tf.float32))
+        ##### YOUR CODE END #####
+
+batch_size = 100
+num_steps = 1000
+    
+tf.reset_default_graph()
+
+# TODO : Model object construction
+##### YOUR CODE START #####
+x = tf.placeholder(tf.float32, [None, img_size_flat])
+y_true = tf.placeholder(tf.float32, [None, num_classes])
+model = Model(x, y_true)
+##### YOUR CODE END #####
+
+with tf.Session() as session:
+    session.run(tf.global_variables_initializer())
+    
+    for step in range(num_steps):
+        # TODO : Model Optimization
+        ##### YOUR CODE START #####
+        x_batch, y_true_batch, _ = data.random_batch(batch_size=batch_size)
+        feed_dict_train = {x: x_batch, y_true: y_true_batch}
+        session.run(model.optimize, feed_dict_train)
+        error = session.run(model.error, feed_dict_train)
+        ##### YOUR CODE END #####
+        
+        if ((step+1) % 100 == 0):
+            print("Error rate @ iter %d : %f" % (step+1, error))
+            
