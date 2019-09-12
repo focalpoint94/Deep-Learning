@@ -75,7 +75,7 @@ def train_model2(session, model, X_train, Y_train, X_val, Y_val, epochs=1, batch
     print("[*] Training done! [*]")
     
     
-    def validate_model(session, model, X, Y, batch_size=500):
+def validate_model(session, model, X, Y, batch_size=500):
     n_batches = len(X) // batch_size
     cross_entropy = 0
     val_accuracy = 0
