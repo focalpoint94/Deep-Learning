@@ -1,14 +1,3 @@
-from __future__ import print_function
-import numpy as np
-#import tensorflow as tf
-from six.moves import cPickle as pickle
-from six.moves import range
-import matplotlib
-import matplotlib.pyplot as plt
-
-%matplotlib inline
-
-
 num_examples = len(train_dataset) # training set size
 nn_input_dim = 784 # input layer dimensionality
 nn_output_dim = 10 # output layer dimensionality
