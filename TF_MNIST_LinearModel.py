@@ -132,7 +132,7 @@ with tf.Session() as session:
     feed_dict_test = {x: data.x_test, y_true: data.y_test, y_true_cls: data.y_test_cls}
     plot_example_errors2()    
     
-// Model2 uses sparse_cross_entropy 
+# Model2 uses sparse_cross_entropy 
 class Model2:
     def __init__(self, data, target):
         self.data = data
