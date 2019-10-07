@@ -1,18 +1,3 @@
-from __future__ import print_function
-import numpy as np
-import tensorflow as tf
-from six.moves import cPickle as pickle
-from six.moves import range
-import os
-
-#configuration for gpu usage
-conf = tf.ConfigProto()
-# you can modify below as you want
-#conf.gpu_options.per_process_gpu_memory_fraction = 0.4
-#conf.gpu_options.allow_growth = True
-#os.environ['CUDA_VISIBLE_DEVICES']='0'
-print(tf.__version__)
-
 #mean = np.mean(train_dataset)
 #std = np.std(train_dataset)
 X_train = train_dataset
